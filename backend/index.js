@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 const dotenv = require("dotenv");
 
 dotenv.config();
@@ -7,6 +8,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 4000;
 
+app.use(cors());
 app.use(express.static("public")); //serves files (html, css, js) in the public folder
 
 app.get("/", (req, res) => {
@@ -34,7 +36,7 @@ app.get("/db/getAll", (req, res) => {
 });
 
 //witeteAll
-app.get("/db/writeAll", (req, res) => {
+app.post("/db/writeAll", (req, res) => {
   const data = require("./routes/db");
   conn.collection("products").insertMany(data, () => {
     res.send({
@@ -46,12 +48,23 @@ app.get("/db/writeAll", (req, res) => {
 });
 
 //deleteAll
-app.get("/db/deleteAll", (req, res) => {
+app.delete("/db/deleteAll", (req, res) => {
   conn.collection("products").deleteMany({}, () => {
     res.send({
       api: "deleteAll",
       status: 200,
       description: "deleted all products successfully"
+    });
+  });
+});
+
+//deleteOne
+app.delete("/db/deleteOne/:id", (req, res) => {
+  conn.collection("products").deleteOne({ name: req.params.id }, () => {
+    res.send({
+      api: "deleteOne",
+      status: 200,
+      description: "deleted a product successfully"
     });
   });
 });

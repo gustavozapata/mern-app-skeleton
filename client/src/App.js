@@ -21,16 +21,24 @@ function App() {
   };
 
   const writeAll = () => {
-    axios.get("http://localhost:4000/db/writeAll").then(res => {
+    axios.post("http://localhost:4000/db/writeAll").then(res => {
       getAll();
       console.log(res.data.description);
     });
   };
   const deleteAll = () => {
-    axios.get("http://localhost:4000/db/deleteAll").then(res => {
+    axios.delete("http://localhost:4000/db/deleteAll").then(res => {
       getAll();
       console.log(res.data.description);
     });
+  };
+  const deleteOne = e => {
+    axios
+      .delete(`http://localhost:4000/db/deleteOne/${e.target.id}`)
+      .then(res => {
+        getAll();
+        console.log(res.data.description);
+      });
   };
 
   return (
@@ -44,6 +52,7 @@ function App() {
             <th>Category</th>
             <th>Price</th>
             <th>Available</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -53,8 +62,13 @@ function App() {
                 <td>{el.name}</td>
                 <td>{el.country}</td>
                 <td>{el.category}</td>
-                <td>{el.price}</td>
+                <td>${el.price}</td>
                 <td>{el.available ? "Yes" : "No"}</td>
+                <td>
+                  <button id={el.name} onClick={deleteOne}>
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))
           ) : (
