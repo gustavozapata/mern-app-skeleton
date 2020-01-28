@@ -10,6 +10,7 @@ const port = process.env.PORT || 4000;
 
 app.use(cors());
 app.use(express.static("public")); //serves files (html, css, js) in the public folder
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("*** server running ***");
@@ -35,9 +36,20 @@ app.get("/db/getAll", (req, res) => {
     });
 });
 
+//insertOne
+app.post("/db/insertOne", (req, res) => {
+  conn.collection("products").insertOne(req.body, () => {
+    res.send({
+      api: "insertOne",
+      status: 200,
+      description: "inserted a product successfully"
+    });
+  });
+});
+
 //witeteAll
 app.post("/db/writeAll", (req, res) => {
-  const data = require("./routes/db");
+  const data = require("./data/db");
   conn.collection("products").insertMany(data, () => {
     res.send({
       api: "writeAll",
