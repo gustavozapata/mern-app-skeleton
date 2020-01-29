@@ -138,6 +138,14 @@ function App() {
       {loading && <p>Loading...</p>}
       <button onClick={writeAll}>Write All</button>
       <button onClick={deleteAll}>Delete All</button>
+      <div className="static-files">
+        <h2>Static files from server</h2>
+        <img
+          src="http://localhost:4000/images/mern.jpeg"
+          style={{ width: "400px" }}
+          alt="MERN"
+        />
+      </div>
     </div>
   );
 }
