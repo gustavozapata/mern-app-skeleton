@@ -145,6 +145,9 @@ function App() {
           style={{ width: "400px" }}
           alt="MERN"
         />
+        <br />
+        <br />
+        <a href="http://localhost:4000/about.html">About</a>
       </div>
     </div>
   );
