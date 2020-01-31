@@ -4,6 +4,7 @@ import axios from "axios";
 
 function App() {
   const [data, setData] = useState([]);
+  const [api, setApi] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const nameRef = useRef();
@@ -19,7 +20,7 @@ function App() {
   const getAll = () => {
     setLoading(true);
     axios
-      .get("http://localhost:4000/db/getAll")
+      .get("http://localhost:4000/db/products")
       .then(res => {
         setData(res.data);
         setLoading(false);
@@ -47,7 +48,9 @@ function App() {
       availableRef.current.value = "";
 
       axios
-        .post("http://localhost:4000/db/insertOne", { ...newProduct })
+        .post(`http://localhost:4000/db/products/${newProduct.name}`, {
+          ...newProduct
+        })
         .then(res => {
           getAll();
           console.log(res.data.description);
@@ -56,14 +59,14 @@ function App() {
   };
   const writeAll = () => {
     setLoading(true);
-    axios.post("http://localhost:4000/db/writeAll").then(res => {
+    axios.post("http://localhost:4000/db/products").then(res => {
       getAll();
       console.log(res.data.description);
     });
   };
   const deleteAll = () => {
     setLoading(true);
-    axios.delete("http://localhost:4000/db/deleteAll").then(res => {
+    axios.delete("http://localhost:4000/db/products").then(res => {
       getAll();
       console.log(res.data.description);
     });
@@ -71,11 +74,16 @@ function App() {
   const deleteOne = e => {
     setLoading(true);
     axios
-      .delete(`http://localhost:4000/db/deleteOne/${e.target.id}`)
+      .delete(`http://localhost:4000/db/products/${e.target.id}`)
       .then(res => {
         getAll();
         console.log(res.data.description);
       });
+  };
+  const getItems = () => {
+    axios.get("http://localhost:4000/api/items").then(res => {
+      setApi(res.data.data.items);
+    });
   };
 
   return (
@@ -148,6 +156,28 @@ function App() {
         <br />
         <br />
         <a href="http://localhost:4000/about.html">About</a>
+      </div>
+      <div className="api-files">
+        <h2>API services</h2>
+        <button onClick={getItems}>Get Items</button>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Export</th>
+            </tr>
+          </thead>
+          <tbody>
+            {api.map(item => (
+              <tr key={item.id}>
+                <td>{item.name}</td>
+                <td>{item.category}</td>
+                <td>{item.export ? "Yes" : "No"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+const fs = require("fs");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -11,6 +12,8 @@ const port = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.static("public")); //serves files (html, css, js) in the public folder
 app.use(express.json());
+
+const items = JSON.parse(fs.readFileSync(`${__dirname}/api/data.json`));
 
 app.get("/", (req, res) => {
   res.send("*** server running ***");
@@ -27,7 +30,7 @@ const conn = mongoose.connection;
 
 //EXPRESS
 //getAll
-app.get("/db/getAll", (req, res) => {
+app.get("/db/products", (req, res) => {
   conn
     .collection("products")
     .find({})
@@ -37,10 +40,10 @@ app.get("/db/getAll", (req, res) => {
 });
 
 //insertOne
-app.post("/db/insertOne", (req, res) => {
+app.post("/db/products/:product", (req, res) => {
   conn.collection("products").insertOne(req.body, () => {
     res.send({
-      api: "insertOne",
+      api: "insert one product",
       status: 200,
       description: "inserted a product successfully"
     });
@@ -48,11 +51,11 @@ app.post("/db/insertOne", (req, res) => {
 });
 
 //witeteAll
-app.post("/db/writeAll", (req, res) => {
+app.post("/db/products", (req, res) => {
   const data = require("./data/db");
   conn.collection("products").insertMany(data, () => {
     res.send({
-      api: "writeAll",
+      api: "write all products",
       status: 200,
       description: "wrote all products successfully"
     });
@@ -60,10 +63,10 @@ app.post("/db/writeAll", (req, res) => {
 });
 
 //deleteAll
-app.delete("/db/deleteAll", (req, res) => {
+app.delete("/db/products", (req, res) => {
   conn.collection("products").deleteMany({}, () => {
     res.send({
-      api: "deleteAll",
+      api: "delete all products",
       status: 200,
       description: "deleted all products successfully"
     });
@@ -71,13 +74,22 @@ app.delete("/db/deleteAll", (req, res) => {
 });
 
 //deleteOne
-app.delete("/db/deleteOne/:id", (req, res) => {
+app.delete("/db/products/:id", (req, res) => {
   conn.collection("products").deleteOne({ name: req.params.id }, () => {
     res.send({
-      api: "deleteOne",
+      api: "delete one product",
       status: 200,
       description: "deleted a product successfully"
     });
+  });
+});
+
+//API
+app.get("/api/items", (req, res) => {
+  res.json({
+    status: "success",
+    results: items.length,
+    data: { items }
   });
 });
 //EXPRESS
