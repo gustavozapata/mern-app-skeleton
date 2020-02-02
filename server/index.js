@@ -19,6 +19,16 @@ app.get("/", (req, res) => {
   res.send("*** server running ***");
 });
 
+//METODO BASICO
+// app.get("/db/products", (req, res) => {
+//   conn
+//     .collection("products")
+//     .find({})
+//     .toArray((err, db_res) => {
+//       res.send(db_res);
+//     });
+// });
+
 //DATABASE
 const db = process.env.MONGO_URI;
 mongoose
@@ -30,59 +40,70 @@ const conn = mongoose.connection;
 
 //EXPRESS
 //getAll
-app.get("/db/products", (req, res) => {
+const getProducts = (req, res) => {
   conn
     .collection("products")
     .find({})
     .toArray((err, db_res) => {
       res.send(db_res);
     });
-});
+};
 
 //insertOne
-app.post("/db/products/:product", (req, res) => {
+const addProduct = (req, res) => {
   conn.collection("products").insertOne(req.body, () => {
-    res.send({
+    res.json({
       api: "insert one product",
       status: 200,
       description: "inserted a product successfully"
     });
   });
-});
+};
 
 //witeteAll
-app.post("/db/products", (req, res) => {
+const insertProducts = (req, res) => {
   const data = require("./data/db");
   conn.collection("products").insertMany(data, () => {
-    res.send({
+    res.json({
       api: "write all products",
       status: 200,
       description: "wrote all products successfully"
     });
   });
-});
+};
 
 //deleteAll
-app.delete("/db/products", (req, res) => {
+const deleteProducts = (req, res) => {
   conn.collection("products").deleteMany({}, () => {
-    res.send({
+    res.json({
       api: "delete all products",
       status: 200,
       description: "deleted all products successfully"
     });
   });
-});
+};
 
 //deleteOne
-app.delete("/db/products/:id", (req, res) => {
+const deleteProduct = (req, res) => {
   conn.collection("products").deleteOne({ name: req.params.id }, () => {
-    res.send({
+    res.json({
       api: "delete one product",
       status: 200,
       description: "deleted a product successfully"
     });
   });
-});
+};
+
+app
+  .route("/db/products")
+  .get(getProducts)
+  .post(insertProducts)
+  .delete(deleteProducts);
+
+app
+  .route("/db/products/:id")
+  .post(addProduct)
+  .delete(deleteProduct);
 
 //API
 app.get("/api/items", (req, res) => {
