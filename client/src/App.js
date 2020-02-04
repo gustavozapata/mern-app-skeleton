@@ -20,7 +20,7 @@ function App() {
   const getAll = () => {
     setLoading(true);
     axios
-      .get("http://localhost:4000/db/products")
+      .get("http://localhost:4000/api/v1/products")
       .then(res => {
         setData(res.data);
         setLoading(false);
@@ -48,7 +48,7 @@ function App() {
       availableRef.current.value = "";
 
       axios
-        .post(`http://localhost:4000/db/products/${newProduct.name}`, {
+        .post(`http://localhost:4000/api/v1/products/${newProduct.name}`, {
           ...newProduct
         })
         .then(res => {
@@ -59,14 +59,14 @@ function App() {
   };
   const writeAll = () => {
     setLoading(true);
-    axios.post("http://localhost:4000/db/products").then(res => {
+    axios.post("http://localhost:4000/api/v1/products").then(res => {
       getAll();
       console.log(res.data.description);
     });
   };
   const deleteAll = () => {
     setLoading(true);
-    axios.delete("http://localhost:4000/db/products").then(res => {
+    axios.delete("http://localhost:4000/api/v1/products").then(res => {
       getAll();
       console.log(res.data.description);
     });
@@ -74,14 +74,14 @@ function App() {
   const deleteOne = e => {
     setLoading(true);
     axios
-      .delete(`http://localhost:4000/db/products/${e.target.id}`)
+      .delete(`http://localhost:4000/api/v1/products/${e.target.id}`)
       .then(res => {
         getAll();
         console.log(res.data.description);
       });
   };
   const getItems = () => {
-    axios.get("http://localhost:4000/api/items").then(res => {
+    axios.get("http://localhost:4000/api/v1/items").then(res => {
       setApi(res.data.data.items);
     });
   };
