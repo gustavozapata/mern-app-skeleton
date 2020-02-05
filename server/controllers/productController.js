@@ -12,6 +12,20 @@ mongoose
 const conn = mongoose.connection;
 //DATABASE
 
+exports.checkId = (req, res, next, val) => {
+  console.log(`the id is: ${val}`);
+  next();
+};
+exports.checkBody = (req, res, next) => {
+  if (!req.body.country) {
+    return res.status(400).json({
+      status: "fail",
+      message: "missing country"
+    });
+  }
+  next();
+};
+
 //getAll
 exports.getProducts = (req, res) => {
   conn
